@@ -164,22 +164,18 @@ public abstract class Message {
     final Object id;
 
     if (!jsonMessage.has(JSON_STRATUM_KEY_ID)) {
-      throw new MalformedStratumMessageException(
-        jsonMessage,
-        String.format("missing '%s'", JSON_STRATUM_KEY_ID)
-      );
-    }
-
-    try {
-      id = jsonMessage.get(JSON_STRATUM_KEY_ID);
-    } catch (JSONException ex) {
-      throw new MalformedStratumMessageException(jsonMessage, ex);
+      id = null;
+    } else {
+      try {
+          id = jsonMessage.get(JSON_STRATUM_KEY_ID);
+      } catch (JSONException ex) {
+          throw new MalformedStratumMessageException(jsonMessage, ex);
+      }
     }
 
     if (id == null) {
       this.setId(null);
-    }
-    else {
+    } else {
       this.setId(Long.parseLong(id.toString()));
     }
   }
