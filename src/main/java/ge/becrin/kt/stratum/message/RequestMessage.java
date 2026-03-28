@@ -1,6 +1,8 @@
 package ge.becrin.kt.stratum.message;
 
 import ge.becrin.kt.stratum.MalformedStratumMessageException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,7 +59,10 @@ extends Message {
   /**
    * The list of parameters being supplied to the method.
    */
-  private List<Object> params;
+  private List<Object> arrayParams;
+
+  //TODO Override original with map behavior instead of this.
+  private Map<String, Object> objectParams;
 
   static {
     nextRequestId = new AtomicLong(1);
@@ -102,12 +107,20 @@ extends Message {
    * @throws IllegalArgumentException
    *   If {@code methodName} is {@code null}.
    */
-  public RequestMessage(final Long id, final String methodName, final Object... params)
-  throws IllegalArgumentException {
+  public RequestMessage(final Long id, final String methodName, final Object... params) {
     super(id);
 
     this.setMethodName(methodName);
-    this.setParams(Arrays.asList(params));
+    this.setArrayParams(Arrays.asList(params));
+    this.setObjectParams(null);
+  }
+
+  public RequestMessage(final Long id, final String methodName, final Map<String, Object> params) {
+    super(id);
+
+    this.setMethodName(methodName);
+    this.setArrayParams(null);
+    this.setObjectParams(params);
   }
 
   /**
@@ -119,13 +132,32 @@ extends Message {
     return this.methodName;
   }
 
+  public boolean hasArrayParams() {
+      return this.arrayParams != null;
+  }
+
+  public boolean hasObjectParams() {
+      return this.objectParams != null;
+  }
+
+
   /**
    * Gets the list of parameters being passed to the remote method.
    *
    * @return An unmodifiable copy of the parameters being passed to the remote method.
    */
-  public List<Object> getParams() {
-    return Collections.unmodifiableList(this.params);
+  public List<Object> getArrayParams() {
+      if (this.arrayParams == null) {
+          return null;
+      }
+    return Collections.unmodifiableList(this.arrayParams);
+  }
+
+  public Map<String, Object> getObjectParams() {
+      if (this.objectParams == null) {
+          return null;
+      }
+      return Collections.unmodifiableMap(this.objectParams);
   }
 
   /**
@@ -137,15 +169,19 @@ extends Message {
 
     try {
       object.put(JSON_STRATUM_KEY_METHOD, this.getMethodName());
-      object.put(JSON_STRATUM_KEY_PARAMS, new JSONArray());
 
-      for (Object param : this.getParams()) {
-        object.append(JSON_STRATUM_KEY_PARAMS, param);
+    if (this.hasObjectParams()) {
+        object.put(JSON_STRATUM_KEY_PARAMS, new JSONObject(this.getObjectParams()));
+    } else {
+        final JSONArray jsonParams = new JSONArray();
+        for (Object param : this.getArrayParams()) {
+            jsonParams.put(param);
+        }
+        object.put(JSON_STRATUM_KEY_PARAMS, jsonParams);
       }
-    } catch (JSONException ex) {
-      // Should not happen
+  } catch (JSONException ex) {
       throw new RuntimeException(
-        "Unexpected exception while contructing JSON object: " + ex.getMessage(),
+        "Unexpected exception while constructing JSON object: " + ex.getMessage(),
         ex
       );
     }
@@ -177,8 +213,12 @@ extends Message {
    * @param params
    *   The list of parameters. The list is used live, in-place.
    */
-  protected void setParams(List<Object> params) {
-    this.params = params;
+  protected void setArrayParams(List<Object> params) {
+    this.arrayParams = params == null ? null : new ArrayList<>(params);
+  }
+
+  protected void setObjectParams(Map<String, Object> params) {
+      this.objectParams = params == null ? null : new LinkedHashMap<>(params);
   }
 
   /**
@@ -241,11 +281,7 @@ extends Message {
    *   If the provided JSON message object is not a properly-formed Stratum message or cannot be
    *   understood.
    */
-  protected void parseParams(JSONObject jsonMessage)
-  throws MalformedStratumMessageException {
-    final List<Object> params     = new ArrayList<>();
-    final JSONArray    jsonParams;
-
+  protected void parseParams(JSONObject jsonMessage) throws MalformedStratumMessageException {
     if (!jsonMessage.has(JSON_STRATUM_KEY_PARAMS)) {
       throw new MalformedStratumMessageException(
         jsonMessage,
@@ -254,15 +290,40 @@ extends Message {
     }
 
     try {
-      jsonParams = jsonMessage.getJSONArray(JSON_STRATUM_KEY_PARAMS);
+        final Object rawParams = jsonMessage.get(JSON_STRATUM_KEY_PARAMS);
 
-      for (int paramIndex = 0; paramIndex < jsonParams.length(); ++paramIndex) {
-        params.add(jsonParams.get(paramIndex));
-      }
+        if (rawParams instanceof JSONArray) {
+            final JSONArray jsonParams = (JSONArray) rawParams;
+            final List<Object> params = new ArrayList<>();
+
+            for (int i = 0; i < jsonParams.length(); ++i) {
+                params.add(jsonParams.get(i));
+            }
+
+            this.setArrayParams(params);
+            this.setObjectParams(null);
+            return;
+        }
+
+        if (rawParams instanceof JSONObject) {
+            final JSONObject jsonParams = (JSONObject) rawParams;
+            final Map<String, Object> params = new LinkedHashMap<>();
+
+            for (String key : jsonParams.keySet()) {
+                params.put(key, jsonParams.get(key));
+            }
+
+            this.setObjectParams(params);
+            this.setArrayParams(null);
+            return;
+        }
+
+        throw new MalformedStratumMessageException(
+            jsonMessage,
+            String.format("'%s' must be a JSON array or object", JSON_STRATUM_KEY_PARAMS)
+        );
     } catch (JSONException ex) {
       throw new MalformedStratumMessageException(jsonMessage, ex);
     }
-
-    this.setParams(params);
   }
 }
