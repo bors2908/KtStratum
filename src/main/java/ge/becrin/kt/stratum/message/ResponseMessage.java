@@ -183,12 +183,7 @@ extends Message {
    *   If {@code id} is {@code null}.
    */
   @Override
-  protected void setId(final Long id)
-  throws IllegalArgumentException {
-    if (id == null) {
-      throw new IllegalArgumentException("id cannot be null.");
-    }
-
+  protected void setId(final Long id) {
     super.setId(id);
   }
 
