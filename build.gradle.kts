@@ -1,5 +1,6 @@
 plugins {
     java
+    `maven-publish`
 }
 
 group = "ge.becrin.kt.stratum"
@@ -24,4 +25,12 @@ dependencies {
     // Logging: SLF4J
     implementation("org.slf4j:slf4j-api:2.0.17")
     implementation("org.slf4j:jcl-over-slf4j:2.0.17")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+        }
+    }
 }
