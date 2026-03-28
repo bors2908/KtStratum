@@ -28,7 +28,7 @@ public abstract class Message {
    * <p>This may be {@code null} if the side of the connection that initiated
    * the request does not expect a response.</p>
    */
-  private String id;
+  private Long id;
 
   /**
    * Constructor for {@link Message} that initializes a new instance from information in the
@@ -52,7 +52,7 @@ public abstract class Message {
    * @param id
    *   The unique identifier for the message. This may be {@code null}.
    */
-  protected Message(final String id) {
+  protected Message(final Long id) {
     this.setId(id);
   }
 
@@ -65,7 +65,7 @@ public abstract class Message {
    *
    * @return The unique identifier for the message; or {@code null} if none was provided.
    */
-  public String getId() {
+  public Long getId() {
     return this.id;
   }
 
@@ -102,7 +102,7 @@ public abstract class Message {
    * @param id
    *   Sets the unique identifier for the message. This may be {@code null}.
    */
-  protected void setId(final String id) {
+  protected void setId(final Long id) {
     this.id = id;
   }
 
@@ -180,7 +180,7 @@ public abstract class Message {
       this.setId(null);
     }
     else {
-      this.setId(id.toString());
+      this.setId(Long.parseLong(id.toString()));
     }
   }
 }

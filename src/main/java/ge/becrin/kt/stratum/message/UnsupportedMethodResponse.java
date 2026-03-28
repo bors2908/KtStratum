@@ -15,7 +15,7 @@ extends ResponseMessage {
    * @param methodName
    *   The name of the method that was not supported.
    */
-  public UnsupportedMethodResponse(final String id, final String methodName) {
+  public UnsupportedMethodResponse(final Long id, final String methodName) {
     super(id, "Method not supported: " + methodName);
   }
 }

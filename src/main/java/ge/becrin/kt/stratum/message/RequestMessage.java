@@ -68,8 +68,8 @@ extends Message {
    *
    * @return A unique identifier for the next Stratum request.
    */
-  public static String getNextRequestId() {
-    return Long.toString(nextRequestId.getAndIncrement());
+  public static Long getNextRequestId() {
+    return nextRequestId.getAndIncrement();
   }
 
   /**
@@ -102,7 +102,7 @@ extends Message {
    * @throws IllegalArgumentException
    *   If {@code methodName} is {@code null}.
    */
-  public RequestMessage(final String id, final String methodName, final Object... params)
+  public RequestMessage(final Long id, final String methodName, final Object... params)
   throws IllegalArgumentException {
     super(id);
 

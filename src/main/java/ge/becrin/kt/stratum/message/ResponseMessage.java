@@ -75,7 +75,7 @@ extends Message {
    * @param result
    *   The result of the method call.
    */
-  public ResponseMessage(final String id, final Result result) {
+  public ResponseMessage(final Long id, final Result result) {
     super(id);
 
     this.setResult(result);
@@ -90,7 +90,7 @@ extends Message {
    * @param error
    *   The error that occurred while processing the request.
    */
-  public ResponseMessage(final String id, final String error) {
+  public ResponseMessage(final Long id, final String error) {
     super(id);
 
     this.setError(error);
@@ -107,7 +107,7 @@ extends Message {
    * @param error
    *   Additional error details about the graceful failure.
    */
-  public ResponseMessage(final String id, final Result result, final String error) {
+  public ResponseMessage(final Long id, final Result result, final String error) {
     super(id);
 
     this.setResult(result);
@@ -183,7 +183,7 @@ extends Message {
    *   If {@code id} is {@code null}.
    */
   @Override
-  protected void setId(final String id)
+  protected void setId(final Long id)
   throws IllegalArgumentException {
     if (id == null) {
       throw new IllegalArgumentException("id cannot be null.");

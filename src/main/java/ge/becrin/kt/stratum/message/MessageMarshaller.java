@@ -60,7 +60,7 @@ public class MessageMarshaller {
    * <p>This map is purged as requests are answered or time-out.</p>
    */
   @SuppressWarnings("UnstableApiUsage")
-  protected Cache<String, Class<? extends ResponseMessage>> requestResponseMap;
+  protected Cache<Long, Class<? extends ResponseMessage>> requestResponseMap;
 
   /**
    * The constructor for {@link MessageMarshaller}.
@@ -111,7 +111,7 @@ public class MessageMarshaller {
    *   instance.
    */
   @SuppressWarnings("UnstableApiUsage")
-  public void registerPendingRequest(final String requestId,
+  public void registerPendingRequest(final Long requestId,
                                      final Class<? extends ResponseMessage> responseType)
   throws IllegalArgumentException {
     if (this.requestResponseMap.getIfPresent(requestId) != null) {
@@ -283,7 +283,7 @@ public class MessageMarshaller {
   throws MalformedStratumMessageException {
     final Message                  result;
     final ResponseMessage          response     = new ResponseMessage(jsonMessage);
-    final String                   messageId    = response.getId(); // Must always be set in responses
+    final Long messageId    = response.getId(); // Must always be set in responses
     final Class<? extends Message> responseType = this.requestResponseMap.getIfPresent(messageId);
 
     if (responseType == null) {
@@ -343,7 +343,7 @@ public class MessageMarshaller {
    * @param expectedResponseType
    *   The type of response that was expected for the message.
    */
-  protected void onRequestExpired(final String messageId,
+  protected void onRequestExpired(final Long messageId,
                                   final Class<? extends ResponseMessage> expectedResponseType) {
     if (LOGGER.isErrorEnabled()) {
       LOGGER.error(
@@ -364,12 +364,12 @@ public class MessageMarshaller {
    * @return A new cache for waiting request responses.
    */
   @SuppressWarnings("UnstableApiUsage")
-  protected Cache<String, Class<? extends ResponseMessage>> createRequestResponseMap() {
+  protected Cache<Long, Class<? extends ResponseMessage>> createRequestResponseMap() {
     return CacheBuilder
       .newBuilder()
       .expireAfterWrite(IGNORED_REQUEST_TIMEOUT_MINUTES, TimeUnit.MINUTES)
       .removalListener(
-        (RemovalListener<String, Class<? extends ResponseMessage>>)((notification) -> {
+        (RemovalListener<Long, Class<? extends ResponseMessage>>)((notification) -> {
           if (notification.getCause() == RemovalCause.EXPIRED) {
             MessageMarshaller.this.onRequestExpired(
               notification.getKey(),
