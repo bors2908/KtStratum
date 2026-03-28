@@ -1,4 +1,4 @@
-package com.redbottledesign.bitcoin.rpc.stratum.message;
+package ge.becrin.kt.stratum.message;
 
 /**
  * <p>{@link Result} handler for a result that's a single value.</p>

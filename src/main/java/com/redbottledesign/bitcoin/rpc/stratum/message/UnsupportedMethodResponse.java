@@ -1,4 +1,4 @@
-package com.redbottledesign.bitcoin.rpc.stratum.message;
+package ge.becrin.kt.stratum.message;
 
 /**
  * A response message that indicates that a method being requested is not

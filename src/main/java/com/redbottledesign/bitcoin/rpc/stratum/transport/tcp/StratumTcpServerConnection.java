@@ -1,7 +1,7 @@
-package com.redbottledesign.bitcoin.rpc.stratum.transport.tcp;
+package ge.becrin.kt.stratum.transport.tcp;
 
-import com.redbottledesign.bitcoin.rpc.stratum.message.Message;
-import com.redbottledesign.bitcoin.rpc.stratum.transport.ConnectionState;
+import ge.becrin.kt.stratum.message.Message;
+import ge.becrin.kt.stratum.transport.ConnectionState;
 
 import java.net.Socket;
 import java.util.List;

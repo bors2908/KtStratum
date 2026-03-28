@@ -1,6 +1,6 @@
-package com.redbottledesign.bitcoin.rpc.stratum;
+package ge.becrin.kt.stratum;
 
-import com.redbottledesign.bitcoin.rpc.stratum.message.RequestMessage;
+import ge.becrin.kt.stratum.message.RequestMessage;
 import org.json.JSONObject;
 
 /**

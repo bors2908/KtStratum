@@ -1,6 +1,6 @@
-package com.redbottledesign.bitcoin.rpc.stratum.transport;
+package ge.becrin.kt.stratum.transport;
 
-import com.redbottledesign.bitcoin.rpc.stratum.message.Message;
+import ge.becrin.kt.stratum.message.Message;
 
 /**
  * <p>Abstract interface for objects interested in being notified when one or more messages of the

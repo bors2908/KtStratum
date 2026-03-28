@@ -1,4 +1,4 @@
-package com.redbottledesign.bitcoin.rpc.stratum;
+package ge.becrin.kt.stratum;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

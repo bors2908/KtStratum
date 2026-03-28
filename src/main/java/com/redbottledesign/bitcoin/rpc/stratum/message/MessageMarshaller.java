@@ -1,11 +1,11 @@
-package com.redbottledesign.bitcoin.rpc.stratum.message;
+package ge.becrin.kt.stratum.message;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalCause;
 import com.google.common.cache.RemovalListener;
-import com.redbottledesign.bitcoin.rpc.stratum.MalformedStratumMessageException;
-import com.redbottledesign.bitcoin.rpc.stratum.UnhandledStratumMessageException;
+import ge.becrin.kt.stratum.MalformedStratumMessageException;
+import ge.becrin.kt.stratum.UnhandledStratumMessageException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

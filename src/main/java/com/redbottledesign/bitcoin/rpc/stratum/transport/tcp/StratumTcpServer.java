@@ -1,4 +1,4 @@
-package com.redbottledesign.bitcoin.rpc.stratum.transport.tcp;
+package ge.becrin.kt.stratum.transport.tcp;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;

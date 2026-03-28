@@ -1,4 +1,4 @@
-JStratum
+KTStratum
 ========
 Reusable, Java-based implementation of the Stratum transport protocol (not specific to mining).
 

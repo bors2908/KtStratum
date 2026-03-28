@@ -1,4 +1,4 @@
-package com.redbottledesign.bitcoin.rpc.stratum.message;
+package ge.becrin.kt.stratum.message;
 
 /**
  * <p>Interface abstraction for the types of data that can be included in the

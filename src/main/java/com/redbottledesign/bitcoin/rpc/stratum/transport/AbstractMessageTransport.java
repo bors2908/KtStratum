@@ -1,8 +1,8 @@
-package com.redbottledesign.bitcoin.rpc.stratum.transport;
+package ge.becrin.kt.stratum.transport;
 
-import com.redbottledesign.bitcoin.rpc.stratum.message.Message;
-import com.redbottledesign.bitcoin.rpc.stratum.message.RequestMessage;
-import com.redbottledesign.bitcoin.rpc.stratum.message.ResponseMessage;
+import ge.becrin.kt.stratum.message.Message;
+import ge.becrin.kt.stratum.message.RequestMessage;
+import ge.becrin.kt.stratum.message.ResponseMessage;
 
 import java.util.LinkedHashSet;
 import java.util.List;

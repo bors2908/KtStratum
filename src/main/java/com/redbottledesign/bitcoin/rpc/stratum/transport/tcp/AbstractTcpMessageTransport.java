@@ -1,11 +1,11 @@
-package com.redbottledesign.bitcoin.rpc.stratum.transport.tcp;
+package ge.becrin.kt.stratum.transport.tcp;
 
-import com.redbottledesign.bitcoin.rpc.stratum.message.Message;
-import com.redbottledesign.bitcoin.rpc.stratum.message.RequestMessage;
-import com.redbottledesign.bitcoin.rpc.stratum.message.ResponseMessage;
-import com.redbottledesign.bitcoin.rpc.stratum.message.UnsupportedMethodResponse;
-import com.redbottledesign.bitcoin.rpc.stratum.transport.ConnectionState;
-import com.redbottledesign.bitcoin.rpc.stratum.transport.StatefulMessageTransport;
+import ge.becrin.kt.stratum.message.Message;
+import ge.becrin.kt.stratum.message.RequestMessage;
+import ge.becrin.kt.stratum.message.ResponseMessage;
+import ge.becrin.kt.stratum.message.UnsupportedMethodResponse;
+import ge.becrin.kt.stratum.transport.ConnectionState;
+import ge.becrin.kt.stratum.transport.StatefulMessageTransport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

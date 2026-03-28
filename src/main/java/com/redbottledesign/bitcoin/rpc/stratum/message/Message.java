@@ -1,6 +1,6 @@
-package com.redbottledesign.bitcoin.rpc.stratum.message;
+package ge.becrin.kt.stratum.message;
 
-import com.redbottledesign.bitcoin.rpc.stratum.MalformedStratumMessageException;
+import ge.becrin.kt.stratum.MalformedStratumMessageException;
 import org.json.JSONException;
 import org.json.JSONObject;
 

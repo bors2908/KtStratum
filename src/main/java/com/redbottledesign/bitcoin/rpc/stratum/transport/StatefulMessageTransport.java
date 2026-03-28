@@ -1,4 +1,4 @@
-package com.redbottledesign.bitcoin.rpc.stratum.transport;
+package ge.becrin.kt.stratum.transport;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
