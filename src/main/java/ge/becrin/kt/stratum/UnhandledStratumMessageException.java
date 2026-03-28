@@ -1,7 +1,6 @@
 package ge.becrin.kt.stratum;
 
 import ge.becrin.kt.stratum.message.RequestMessage;
-import org.json.JSONObject;
 
 /**
  * Exception thrown when there is no handler registered for a specific type of Stratum message.
