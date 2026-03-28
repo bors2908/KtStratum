@@ -4,6 +4,8 @@ import ge.becrin.kt.stratum.UnhandledStratumMessageException;
 import ge.becrin.kt.stratum.message.Message;
 import ge.becrin.kt.stratum.message.MessageMarshaller;
 import ge.becrin.kt.stratum.transport.ConnectionState;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,9 +52,15 @@ extends Thread {
    */
   @Override
   public void run() {
-    try (Scanner scan = new Scanner(this.transport.getSocket().getInputStream())) {
+    try (BufferedReader reader = new BufferedReader(new InputStreamReader(this.transport.getSocket().getInputStream()))) {
       while (this.transport.isOpen()) {
-        final String jsonLine = scan.nextLine().trim();
+        final String line = reader.readLine();
+
+        if (line == null) {
+            throw new IllegalStateException("Connection closed.");
+        }
+
+        final String jsonLine = line.trim();
 
         if (!jsonLine.isEmpty()) {
           synchronized (this.transport) {
