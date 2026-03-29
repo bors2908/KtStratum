@@ -1,9 +1,9 @@
 package ge.becrin.kt.stratum.transport;
 
 import ge.becrin.kt.stratum.message.Message;
+import ge.becrin.kt.stratum.message.NotificationMessage;
 import ge.becrin.kt.stratum.message.RequestMessage;
 import ge.becrin.kt.stratum.message.ResponseMessage;
-
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,115 +20,128 @@ import java.util.Set;
  * @author Guy Paddock (guy@inveniem.com)
  */
 public abstract class AbstractMessageTransport
-implements MessageTransport {
-  /**
-   * The set of request listeners to notify when requests are received.
-   */
-  protected Set<MessageListener<RequestMessage>> requestListeners;
+    implements MessageTransport {
+    /**
+     * The set of request listeners to notify when requests are received.
+     */
+    protected Set<MessageListener<RequestMessage>> requestListeners;
 
-  /**
-   * The set of response listeners to notify when responses are received.
-   */
-  protected Set<MessageListener<ResponseMessage>> responseListeners;
+    /**
+     * The set of response listeners to notify when responses are received.
+     */
+    protected Set<MessageListener<ResponseMessage>> responseListeners;
 
-  /**
-   * Default constructor for {@link AbstractMessageTransport}.
-   */
-  public AbstractMessageTransport() {
-    this.requestListeners   = new LinkedHashSet<>();
-    this.responseListeners  = new LinkedHashSet<>();
-  }
+    protected Set<MessageListener<NotificationMessage>> notificationListeners;
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public synchronized void registerRequestListener(final MessageListener<RequestMessage> listener) {
-    this.requestListeners.add(listener);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public synchronized void unregisterRequestListener(
-                                                  final MessageListener<RequestMessage> listener) {
-    this.requestListeners.remove(listener);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public synchronized void registerResponseListener(
-                                                  final MessageListener<ResponseMessage> listener) {
-    this.responseListeners.add(listener);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public synchronized void unregisterResponseListener(
-                                                  final MessageListener<ResponseMessage> listener) {
-    this.responseListeners.remove(listener);
-  }
-
-  /**
-   * Notifies listeners about the provided messages.
-   *
-   * @param messages
-   *   The messages to notify listeners about.
-   */
-  protected synchronized void notifyMessageListeners(final List<Message> messages) {
-    for (final Message message : messages) {
-      this.notifyMessageListeners(message);
+    /**
+     * Default constructor for {@link AbstractMessageTransport}.
+     */
+    public AbstractMessageTransport() {
+        this.requestListeners = new LinkedHashSet<>();
+        this.responseListeners = new LinkedHashSet<>();
+        this.notificationListeners = new LinkedHashSet<>();
     }
-  }
 
-  /**
-   * Notifies listeners about the provided message(s).
-   *
-   * @param messages
-   *   The message(s) to notify listeners about.
-   */
-  protected synchronized void notifyMessageListeners(final Message... messages) {
-    for (final Message message : messages) {
-      if (message instanceof RequestMessage) {
-        this.notifyMessageListenersRequestReceived((RequestMessage)message);
-      } else if (message instanceof ResponseMessage) {
-        this.notifyMessageListenersResponseReceived((ResponseMessage)message);
-      } else {
-        throw new IllegalArgumentException(
-          "Unknown message type (expected either RequestMessage or ResponseMessage): " +
-          message.getClass().getName()
-        );
-      }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized void registerRequestListener(final MessageListener<RequestMessage> listener) {
+        this.requestListeners.add(listener);
     }
-  }
 
-  /**
-   * Notifies request listeners about the provided request.
-   *
-   * @param request
-   *   The request to notify listeners about.
-   */
-  protected synchronized void notifyMessageListenersRequestReceived(final RequestMessage request) {
-    for (final MessageListener<RequestMessage> listener : this.requestListeners) {
-      listener.onMessageReceived(request);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized void unregisterRequestListener(final MessageListener<RequestMessage> listener) {
+        this.requestListeners.remove(listener);
     }
-  }
 
-  /**
-   * Notifies response listeners about the provided response.
-   *
-   * @param response
-   *   The response to notify listeners about.
-   */
-  protected synchronized void notifyMessageListenersResponseReceived(
-                                                                  final ResponseMessage response) {
-    for (final MessageListener<ResponseMessage> listener : this.responseListeners) {
-      listener.onMessageReceived(response);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized void registerResponseListener(final MessageListener<ResponseMessage> listener) {
+        this.responseListeners.add(listener);
     }
-  }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized void unregisterResponseListener(final MessageListener<ResponseMessage> listener) {
+        this.responseListeners.remove(listener);
+    }
+
+    @Override
+    public void registerNotificationListener(final MessageListener<NotificationMessage> listener) {
+        this.notificationListeners.add(listener);
+    }
+
+    @Override
+    public void unregisterNotificationListener(MessageListener<NotificationMessage> listener) {
+        this.notificationListeners.remove(listener);
+    }
+
+    /**
+     * Notifies listeners about the provided messages.
+     *
+     * @param messages The messages to notify listeners about.
+     */
+    protected synchronized void notifyMessageListeners(final List<Message> messages) {
+        for (final Message message : messages) {
+            this.notifyMessageListeners(message);
+        }
+    }
+
+    /**
+     * Notifies listeners about the provided message(s).
+     *
+     * @param messages The message(s) to notify listeners about.
+     */
+    protected synchronized void notifyMessageListeners(final Message... messages) {
+        for (final Message message : messages) {
+            if (message instanceof RequestMessage) {
+                this.notifyMessageListenersRequestReceived((RequestMessage)message);
+            } else if (message instanceof ResponseMessage) {
+                this.notifyMessageListenersResponseReceived((ResponseMessage)message);
+            } else if (message instanceof NotificationMessage) {
+                this.notifyMessageListenersNotificationReceived((NotificationMessage)message);
+            } else {
+                throw new IllegalArgumentException(
+                    "Unknown message type (expected either RequestMessage or ResponseMessage): " +
+                    message.getClass().getName()
+                );
+            }
+        }
+    }
+
+    /**
+     * Notifies request listeners about the provided request.
+     *
+     * @param request The request to notify listeners about.
+     */
+    protected synchronized void notifyMessageListenersRequestReceived(final RequestMessage request) {
+        for (final MessageListener<RequestMessage> listener : this.requestListeners) {
+            listener.onMessageReceived(request);
+        }
+    }
+
+    /**
+     * Notifies response listeners about the provided response.
+     *
+     * @param response The response to notify listeners about.
+     */
+    protected synchronized void notifyMessageListenersResponseReceived(final ResponseMessage response) {
+        for (final MessageListener<ResponseMessage> listener : this.responseListeners) {
+            listener.onMessageReceived(response);
+        }
+    }
+
+    protected synchronized void notifyMessageListenersNotificationReceived(final NotificationMessage notification) {
+        for (final MessageListener<NotificationMessage> listener : this.notificationListeners) {
+            listener.onMessageReceived(notification);
+        }
+    }
 }
