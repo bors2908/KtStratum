@@ -10,10 +10,10 @@ package ge.becrin.kt.stratum.message;
  * @author Guy Paddock (guy@inveniem.com)
  */
 public interface Result {
-  /**
-   * <p>Converts this result into its equivalent representation in JSON.</p>
-   *
-   * @return The JSON representation of this Stratum result.
-   */
-  Object toJson();
+    /**
+     * <p>Converts this result into its equivalent representation in JSON.</p>
+     *
+     * @return The JSON representation of this Stratum result.
+     */
+    Object toJson();
 }

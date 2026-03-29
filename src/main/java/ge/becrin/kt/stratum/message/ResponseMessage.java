@@ -28,249 +28,232 @@ import org.json.JSONObject;
  * @author Guy Paddock (guy@inveniem.com)
  */
 public class ResponseMessage
-extends Message {
-  /**
-   * Constant for the name of the {@code method} field in the JSON object for this message.
-   */
-  protected static final String JSON_STRATUM_KEY_RESULT = "result";
+    extends Message {
+    /**
+     * Constant for the name of the {@code method} field in the JSON object for this message.
+     */
+    protected static final String JSON_STRATUM_KEY_RESULT = "result";
 
-  /**
-   * Constant for the name of the {@code error} field in the JSON object for this message.
-   */
-  protected static final String JSON_STRATUM_KEY_ERROR = "error";
+    /**
+     * Constant for the name of the {@code error} field in the JSON object for this message.
+     */
+    protected static final String JSON_STRATUM_KEY_ERROR = "error";
 
-  /**
-   * The result of the method call.
-   */
-  private Result result;
+    /**
+     * The result of the method call.
+     */
+    private Result result;
 
-  /**
-   * An error message describing why the last request could not be completed, if the request
-   * failed.
-   */
-  private String error;
+    /**
+     * An error message describing why the last request could not be completed, if the request
+     * failed.
+     */
+    private String error;
 
-  /**
-   * Constructor for {@link ResponseMessage} that initializes a new instance from information in the
-   * included JSON message.
-   *
-   * @param jsonMessage
-   *   The JSON message object.
-   *
-   * @throws MalformedStratumMessageException
-   *   If the provided JSON message object is not a properly-formed Stratum message or cannot be
-   *   understood.
-   */
-  public ResponseMessage(final JSONObject jsonMessage)
-  throws MalformedStratumMessageException {
-    super(jsonMessage);
-  }
-
-  /**
-   * Constructor for {@link ResponseMessage} that initializes a new instance having the specified ID
-   * and result.
-   *
-   * @param id
-   *   The unique identifier for the message. This may be {@code null}.
-   * @param result
-   *   The result of the method call.
-   */
-  public ResponseMessage(final Long id, final Result result) {
-    super(id);
-
-    this.setResult(result);
-  }
-
-  /**
-   * Constructor for {@link ResponseMessage} that initializes a new instance having the specified ID
-   * and error.
-   *
-   * @param id
-   *   The unique identifier for the message. This may be {@code null}.
-   * @param error
-   *   The error that occurred while processing the request.
-   */
-  public ResponseMessage(final Long id, final String error) {
-    super(id);
-
-    this.setError(error);
-  }
-
-  /**
-   * Constructor for {@link ResponseMessage} that initializes a new instance having the specified
-   * ID, result, and error message (for graceful failures).
-   *
-   * @param id
-   *   The unique identifier for the message. This may be {@code null}.
-   * @param result
-   *   The result of the method call.
-   * @param error
-   *   Additional error details about the graceful failure.
-   */
-  public ResponseMessage(final Long id, final Result result, final String error) {
-    super(id);
-
-    this.setResult(result);
-    this.setError(error);
-  }
-
-  /**
-   * Gets the result of the method call.
-   *
-   * @return The result of the method call.
-   */
-  public Result getResult() {
-    return this.result;
-  }
-
-  /**
-   * Gets an error message describing why the last request could not be completed, if the request
-   * failed.
-   *
-   * @return The last error message.
-   */
-  public String getError() {
-    return this.error;
-  }
-
-  /**
-   * <p>Returns whether or not the request was successfully processed.</p>
-   *
-   * <p>This is equivalent to the following code:</p>
-   *
-   * <pre>
-   * return (this.getError() == null);
-   * </pre>
-   *
-   * @return {@code true} if the request was successfully processed; {@code false}, otherwise.
-   */
-  public boolean wasRequestSuccessful() {
-    return (this.getError() == null);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public JSONObject toJson() {
-    final JSONObject object = super.toJson();
-
-    try {
-      final Result result = this.getResult();
-      final String error  = this.getError();
-
-      object.put(JSON_STRATUM_KEY_ERROR,  (error != null)  ? error           : JSONObject.NULL);
-      object.put(JSON_STRATUM_KEY_RESULT, (result != null) ? result.toJson() : JSONObject.NULL);
-    } catch (JSONException ex) {
-      // Should not happen
-      throw new RuntimeException(
-        "Unexpected exception while contructing JSON object: " + ex.getMessage(),
-        ex
-      );
+    /**
+     * Constructor for {@link ResponseMessage} that initializes a new instance from information in the
+     * included JSON message.
+     *
+     * @param jsonMessage The JSON message object.
+     *
+     * @throws MalformedStratumMessageException If the provided JSON message object is not a properly-formed Stratum message or cannot be
+     * understood.
+     */
+    public ResponseMessage(final JSONObject jsonMessage)
+        throws MalformedStratumMessageException {
+        super(jsonMessage);
     }
 
-    return object;
-  }
+    /**
+     * Constructor for {@link ResponseMessage} that initializes a new instance having the specified ID
+     * and result.
+     *
+     * @param id The unique identifier for the message. This may be {@code null}.
+     * @param result The result of the method call.
+     */
+    public ResponseMessage(final Long id, final Result result) {
+        super(id);
 
-  /**
-   * Sets the unique identifier for this response, which must correspond to the identifier provided
-   * in the original request.
-   *
-   * @param id
-   *   Sets the unique identifier for the message. This cannot be {@code null}.
-   *
-   * @throws IllegalArgumentException
-   *   If {@code id} is {@code null}.
-   */
-  @Override
-  protected void setId(final Long id) {
-    super.setId(id);
-  }
-
-  /**
-   * Sets the result of the method call.
-   *
-   * @param result
-   *   The new result of the method call.
-   */
-  protected void setResult(final Result result) {
-    this.result = result;
-  }
-
-  /**
-   * Sets an error message describing why the last request could not be completed, if the request
-   * failed.
-   *
-   * @param error
-   *   The error message.
-   */
-  protected void setError(final String error) {
-    this.error = error;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void parseMessage(final JSONObject jsonMessage)
-  throws MalformedStratumMessageException {
-    this.parseResult(jsonMessage);
-    this.parseError(jsonMessage);
-
-    // Call superclass last, since it calls validateParsedData()
-    super.parseMessage(jsonMessage);
-  }
-
-  /**
-   * Parses-out the {@code result} field from the message.
-   *
-   * @param jsonMessage
-   *   The message to parse.
-   *
-   * @throws MalformedStratumMessageException
-   *   If the provided JSON message object is not a properly-formed Stratum message or cannot be
-   *   understood.
-   */
-  protected void parseResult(final JSONObject jsonMessage)
-  throws MalformedStratumMessageException {
-    final Result result;
-
-    if (!jsonMessage.has(JSON_STRATUM_KEY_RESULT)) {
-      throw new MalformedStratumMessageException(
-        jsonMessage, String.format("missing '%s'", JSON_STRATUM_KEY_RESULT));
+        this.setResult(result);
     }
 
-    try {
-      result = ResultFactory.getInstance().createResult(jsonMessage.get(JSON_STRATUM_KEY_RESULT));
-    } catch (JSONException ex) {
-      throw new MalformedStratumMessageException(jsonMessage, ex);
+    /**
+     * Constructor for {@link ResponseMessage} that initializes a new instance having the specified ID
+     * and error.
+     *
+     * @param id The unique identifier for the message. This may be {@code null}.
+     * @param error The error that occurred while processing the request.
+     */
+    public ResponseMessage(final Long id, final String error) {
+        super(id);
+
+        this.setError(error);
     }
 
-    this.setResult(result);
-  }
+    /**
+     * Constructor for {@link ResponseMessage} that initializes a new instance having the specified
+     * ID, result, and error message (for graceful failures).
+     *
+     * @param id The unique identifier for the message. This may be {@code null}.
+     * @param result The result of the method call.
+     * @param error Additional error details about the graceful failure.
+     */
+    public ResponseMessage(final Long id, final Result result, final String error) {
+        super(id);
 
-  /**
-   * Parses-out the {@code error} field from the message.
-   *
-   * @param jsonMessage
-   *   The message to parse.
-   *
-   * @throws MalformedStratumMessageException
-   *   If the provided JSON message object is not a properly-formed Stratum message or cannot be
-   *   understood.
-   */
-  protected void parseError(final JSONObject jsonMessage)
-  throws MalformedStratumMessageException {
-    String error = null;
-
-    if (jsonMessage.has(JSON_STRATUM_KEY_ERROR) && !jsonMessage.isNull(JSON_STRATUM_KEY_ERROR)) {
-      try {
-        error = jsonMessage.get(JSON_STRATUM_KEY_ERROR).toString();
-      } catch (JSONException ex) {
-        throw new MalformedStratumMessageException(jsonMessage, ex);
-      }
+        this.setResult(result);
+        this.setError(error);
     }
 
-    this.setError(error);
-  }
+    /**
+     * Gets the result of the method call.
+     *
+     * @return The result of the method call.
+     */
+    public Result getResult() {
+        return this.result;
+    }
+
+    /**
+     * Gets an error message describing why the last request could not be completed, if the request
+     * failed.
+     *
+     * @return The last error message.
+     */
+    public String getError() {
+        return this.error;
+    }
+
+    /**
+     * <p>Returns whether or not the request was successfully processed.</p>
+     *
+     * <p>This is equivalent to the following code:</p>
+     *
+     * <pre>
+     * return (this.getError() == null);
+     * </pre>
+     *
+     * @return {@code true} if the request was successfully processed; {@code false}, otherwise.
+     */
+    public boolean wasRequestSuccessful() {
+        return (this.getError() == null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JSONObject toJson() {
+        final JSONObject object = super.toJson();
+
+        try {
+            final Result result = this.getResult();
+            final String error = this.getError();
+
+            object.put(JSON_STRATUM_KEY_ERROR, (error != null) ? error : JSONObject.NULL);
+            object.put(JSON_STRATUM_KEY_RESULT, (result != null) ? result.toJson() : JSONObject.NULL);
+        } catch (JSONException ex) {
+            // Should not happen
+            throw new RuntimeException(
+                "Unexpected exception while contructing JSON object: " + ex.getMessage(),
+                ex
+            );
+        }
+
+        return object;
+    }
+
+    /**
+     * Sets the unique identifier for this response, which must correspond to the identifier provided
+     * in the original request.
+     *
+     * @param id Sets the unique identifier for the message. This cannot be {@code null}.
+     *
+     * @throws IllegalArgumentException If {@code id} is {@code null}.
+     */
+    @Override
+    protected void setId(final Long id) {
+        super.setId(id);
+    }
+
+    /**
+     * Sets the result of the method call.
+     *
+     * @param result The new result of the method call.
+     */
+    protected void setResult(final Result result) {
+        this.result = result;
+    }
+
+    /**
+     * Sets an error message describing why the last request could not be completed, if the request
+     * failed.
+     *
+     * @param error The error message.
+     */
+    protected void setError(final String error) {
+        this.error = error;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void parseMessage(final JSONObject jsonMessage)
+        throws MalformedStratumMessageException {
+        this.parseResult(jsonMessage);
+        this.parseError(jsonMessage);
+
+        // Call superclass last, since it calls validateParsedData()
+        super.parseMessage(jsonMessage);
+    }
+
+    /**
+     * Parses-out the {@code result} field from the message.
+     *
+     * @param jsonMessage The message to parse.
+     *
+     * @throws MalformedStratumMessageException If the provided JSON message object is not a properly-formed Stratum message or cannot be
+     * understood.
+     */
+    protected void parseResult(final JSONObject jsonMessage)
+        throws MalformedStratumMessageException {
+        final Result result;
+
+        if (!jsonMessage.has(JSON_STRATUM_KEY_RESULT)) {
+            throw new MalformedStratumMessageException(
+                jsonMessage, String.format("missing '%s'", JSON_STRATUM_KEY_RESULT));
+        }
+
+        try {
+            result = ResultFactory.getInstance().createResult(jsonMessage.get(JSON_STRATUM_KEY_RESULT));
+        } catch (JSONException ex) {
+            throw new MalformedStratumMessageException(jsonMessage, ex);
+        }
+
+        this.setResult(result);
+    }
+
+    /**
+     * Parses-out the {@code error} field from the message.
+     *
+     * @param jsonMessage The message to parse.
+     *
+     * @throws MalformedStratumMessageException If the provided JSON message object is not a properly-formed Stratum message or cannot be
+     * understood.
+     */
+    protected void parseError(final JSONObject jsonMessage)
+        throws MalformedStratumMessageException {
+        String error = null;
+
+        if (jsonMessage.has(JSON_STRATUM_KEY_ERROR) && !jsonMessage.isNull(JSON_STRATUM_KEY_ERROR)) {
+            try {
+                error = jsonMessage.get(JSON_STRATUM_KEY_ERROR).toString();
+            } catch (JSONException ex) {
+                throw new MalformedStratumMessageException(jsonMessage, ex);
+            }
+        }
+
+        this.setError(error);
+    }
 }

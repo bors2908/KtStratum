@@ -5,17 +5,15 @@ package ge.becrin.kt.stratum.message;
  * supported.
  */
 public class UnsupportedMethodResponse
-extends ResponseMessage {
-  /**
-   * Constructor for {@link UnsupportedMethodResponse} that initializes a new instance having the
-   * specified ID for the specified method that was not supported.
-   *
-   * @param id
-   *   The unique identifier for the message. This may be {@code null}.
-   * @param methodName
-   *   The name of the method that was not supported.
-   */
-  public UnsupportedMethodResponse(final Long id, final String methodName) {
-    super(id, "Method not supported: " + methodName);
-  }
+    extends ResponseMessage {
+    /**
+     * Constructor for {@link UnsupportedMethodResponse} that initializes a new instance having the
+     * specified ID for the specified method that was not supported.
+     *
+     * @param id The unique identifier for the message. This may be {@code null}.
+     * @param methodName The name of the method that was not supported.
+     */
+    public UnsupportedMethodResponse(final Long id, final String methodName) {
+        super(id, "Method not supported: " + methodName);
+    }
 }

@@ -9,18 +9,16 @@ import ge.becrin.kt.stratum.message.Message;
  * <p>© 2013 - 2014 RedBottle Design, LLC.</p>
  * <p>© 2020 Inveniem.</p>
  *
- * @param <T>
- *   The type of message the listener is handling.
+ * @param <T> The type of message the listener is handling.
  *
  * @author Guy Paddock (guy@inveniem.com)
  */
 @FunctionalInterface
 public interface MessageListener<T extends Message> {
-  /**
-   * Method invoked when a message is received over a message transport.
-   *
-   * @param message
-   *   The message that was received.
-   */
-  void onMessageReceived(T message);
+    /**
+     * Method invoked when a message is received over a message transport.
+     *
+     * @param message The message that was received.
+     */
+    void onMessageReceived(T message);
 }
