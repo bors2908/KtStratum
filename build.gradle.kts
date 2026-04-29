@@ -12,8 +12,12 @@ java {
 
     withSourcesJar()
 }
+
 repositories {
-    mavenCentral()
+    maven {
+        url = uri("http://localhost:8081/repository/maven-public/")
+        isAllowInsecureProtocol = true
+    }
 }
 
 dependencies {
@@ -29,6 +33,17 @@ dependencies {
 }
 
 publishing {
+    repositories {
+        maven {
+            url = uri("http://localhost:8081/repository/maven-hosted/")
+            credentials {
+                username = findProperty("nexusUser") as String?
+                password = findProperty("nexusPass") as String?
+            }
+            isAllowInsecureProtocol = true
+        }
+    }
+
     publications {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
