@@ -15,7 +15,7 @@ java {
 
 repositories {
     maven {
-        url = uri("http://localhost:8081/repository/maven-public/")
+        url = uri("http://localhost:9001/repository/maven-public/")
         isAllowInsecureProtocol = true
     }
     mavenCentral()
@@ -36,7 +36,7 @@ dependencies {
 publishing {
     repositories {
         maven {
-            url = uri("http://localhost:8081/repository/maven-hosted/")
+            url = uri("http://localhost:9001/repository/maven-hosted/")
             credentials {
                 username = findProperty("nexusUser") as String?
                 password = findProperty("nexusPass") as String?
