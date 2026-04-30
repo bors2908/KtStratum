@@ -3,8 +3,8 @@ plugins {
     `maven-publish`
 }
 
-group = "ge.becrin.kt.stratum"
-version = "1.0.0-SNAPSHOT"
+group = "ge.becrin"
+version = "0.1.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -18,6 +18,7 @@ repositories {
         url = uri("http://localhost:8081/repository/maven-public/")
         isAllowInsecureProtocol = true
     }
+    mavenCentral()
 }
 
 dependencies {
